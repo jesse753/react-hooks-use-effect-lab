@@ -1,11 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
+  const intervalId = useRef();
 
   // add useEffect code
 
+  useEffect(() => {
+    intervalId.current = setInterval(() => {
+      setTimeRemaining((timeRemaining) => timeRemaining - 1);
+    }, 1000);
+
+    return () => clearTimeout(intervalId.current);
+  }, []);
+
+  useEffect(() => {
+    if (timeRemaining === 0) {
+      onAnswered(false);
+    }
+  }, [timeRemaining, onAnswered]);
+
+
   function handleAnswer(isCorrect) {
+    clearTimeout(intervalId.current);
     setTimeRemaining(10);
     onAnswered(isCorrect);
   }
@@ -30,3 +47,4 @@ function Question({ question, onAnswered }) {
 }
 
 export default Question;
+
